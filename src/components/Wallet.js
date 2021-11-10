@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Connection, clusterApiUrl, LAMPORTS_PER_SOL, Base58 } from "@solana/web3.js";
+import { Connection, clusterApiUrl, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import * as web3 from "@solana/web3.js";
 import * as splToken from "@solana/spl-token";
-const bs58 = require('bs58')
-
-
-console.log(splToken);
 
 //check solana on window
 const getProvider = () => {
@@ -17,9 +13,6 @@ const getProvider = () => {
   }
   window.open("https://phantom.app/", "_blank");
 };
-
-
-
 
 const Wallet = () => {
   const [logs, setLogs] = useState([]);
@@ -159,23 +152,6 @@ const Wallet = () => {
     }
   };
 
-  const getAccountInfo = async () => {
-    try {
-      const connection = new web3.Connection(
-        web3.clusterApiUrl("devnet"),
-        "confirmed"
-      );
-      const data = await splToken.Token.getAssociatedTokenAddress(
-        null,
-        splToken.TOKEN_PROGRAM_ID,
-        provider.publicKey
-      );
-      console.log(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const TokenAccountsByOwner = async () => {
     try {
       const connection = createConnection();
@@ -183,23 +159,20 @@ const Wallet = () => {
 
       var b64string = provider.publicKey;
       let buf;
-    
+
       if (typeof Buffer.from === "function") {
-        buf = Buffer.from(b64string, 'base64');
+        buf = Buffer.from(b64string, "base64");
       } else {
-        buf = Buffer.from(b64string, 'base64');
+        buf = Buffer.from(b64string, "base64");
       }
 
       console.log(buf);
 
-      if(provider.publicKey){
-        const spl = await connection.getTokenAccountsByOwner(
-          ownerToken,
-          {
-            mint:buf
-          }
-        );
-         console.log(spl);
+      if (provider.publicKey) {
+        const spl = await connection.getTokenAccountsByOwner(ownerToken, {
+          mint: buf,
+        });
+        console.log(spl);
       }
     } catch (error) {
       console.log(error);
@@ -228,8 +201,7 @@ const Wallet = () => {
 
   useEffect(() => {
     Balance();
-    // MinBalanceRentForExemptMultisig();
-    getAccountInfo();
+    TokenAccountsByOwner();
   });
 
   return (
