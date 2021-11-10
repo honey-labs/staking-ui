@@ -3,6 +3,8 @@ import { Connection, clusterApiUrl, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import * as web3 from "@solana/web3.js";
 import * as splToken from "@solana/spl-token";
 
+console.log(web3);
+
 //check solana on window
 const getProvider = () => {
   if ("solana" in window) {
@@ -19,6 +21,8 @@ const Wallet = () => {
   const [connectData, setConnected] = useState(false);
   const [balance, setBalance] = useState(0);
   const addLog = (log) => setLogs([...logs, log]);
+
+  const [nftAddress, setNftAddress] = useState([]);
 
   //create a connection of devnet
   const createConnection = () => {
@@ -156,23 +160,15 @@ const Wallet = () => {
     try {
       const connection = createConnection();
       let ownerToken = provider.publicKey;
-
-      var b64string = provider.publicKey;
-      let buf;
-
-      if (typeof Buffer.from === "function") {
-        buf = Buffer.from(b64string, "base64");
-      } else {
-        buf = Buffer.from(b64string, "base64");
-      }
-
-      console.log(buf);
+      console.log(ownerToken);
 
       if (provider.publicKey) {
         const spl = await connection.getTokenAccountsByOwner(ownerToken, {
-          mint: buf,
+          programId: splToken.TOKEN_PROGRAM_ID,
         });
         console.log(spl);
+        setNftAddress(spl.value);
+        // console.log(spl.value[0].pubkey.toString());
       }
     } catch (error) {
       console.log(error);
@@ -232,6 +228,14 @@ const Wallet = () => {
               <p className="mt-3">
                 {connectData === true ? `Balance is ${balance} SOL` : ""}
               </p>
+            </div>
+          </div>
+          <h6 className="text-center mt-5">NFT Address</h6>
+          <div className="row ">
+            <div className="col-12 mt-3 text-center">
+              {nftAddress.map((val) => {
+                return <p>{val.pubkey.toString()}</p>;
+              })}
             </div>
           </div>
         </div>
