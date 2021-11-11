@@ -2,8 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Connection, clusterApiUrl, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import * as web3 from "@solana/web3.js";
 import * as splToken from "@solana/spl-token";
-
-console.log(web3);
+import {
+  getParsedNftAccountsByOwner,
+  isValidSolanaAddress,
+  createConnectionConfig,
+} from "@nfteyez/sol-rayz";
+import NFT from "./NFT";
 
 //check solana on window
 const getProvider = () => {
@@ -21,16 +25,17 @@ const Wallet = () => {
   const [connectData, setConnected] = useState(false);
   const [balance, setBalance] = useState(0);
   const addLog = (log) => setLogs([...logs, log]);
+  const [nfts, setNfts] = useState([]);
 
   const [nftAddress, setNftAddress] = useState([]);
+
+  //call provider
+  const provider = getProvider();
 
   //create a connection of devnet
   const createConnection = () => {
     return new Connection(clusterApiUrl("devnet"));
   };
-
-  //call provider
-  const provider = getProvider();
 
   const getInfo = async () => {
     try {
@@ -143,7 +148,7 @@ const Wallet = () => {
   //get Account Balance
   const Balance = async () => {
     const connection = createConnection();
-    if (provider.publicKey) {
+    if (connectData === true) {
       connection
         .getBalance(provider.publicKey)
         .then((bal) => {
@@ -156,19 +161,41 @@ const Wallet = () => {
     }
   };
 
+  //get all MINT address
   const TokenAccountsByOwner = async () => {
     try {
-      const connection = createConnection();
-      let ownerToken = provider.publicKey;
-      console.log(ownerToken);
+      if (connectData === true) {
+        const connection = createConnection();
+        let ownerToken = provider.publicKey;
 
-      if (provider.publicKey) {
-        const spl = await connection.getTokenAccountsByOwner(ownerToken, {
-          programId: splToken.TOKEN_PROGRAM_ID,
+        if (provider.publicKey) {
+          const spl = await connection.getTokenAccountsByOwner(ownerToken, {
+            programId: splToken.TOKEN_PROGRAM_ID,
+          });
+
+          setNftAddress(spl.value);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  //get NFT
+  const parseNfts = async () => {
+    try {
+      if (connectData === true) {
+        const connect = createConnectionConfig(clusterApiUrl("devnet"));
+        let ownerToken = provider.publicKey;
+        const result = isValidSolanaAddress(ownerToken);
+        console.log("result", result);
+
+        const nfts = await getParsedNftAccountsByOwner({
+          publicAddress: ownerToken,
+          connection: connect,
+          serialization: true,
         });
-        console.log(spl);
-        setNftAddress(spl.value);
-        // console.log(spl.value[0].pubkey.toString());
+        setNfts(nfts);
       }
     } catch (error) {
       console.log(error);
@@ -198,7 +225,8 @@ const Wallet = () => {
   useEffect(() => {
     Balance();
     TokenAccountsByOwner();
-  });
+    parseNfts();
+  }, [connectData]);
 
   return (
     <>
@@ -230,14 +258,23 @@ const Wallet = () => {
               </p>
             </div>
           </div>
-          <h6 className="text-center mt-5">NFT Address</h6>
-          <div className="row ">
-            <div className="col-12 mt-3 text-center">
-              {nftAddress.map((val) => {
-                return <p>{val.pubkey.toString()}</p>;
-              })}
-            </div>
-          </div>
+
+          <NFT nft={nfts} valid={connectData} />
+
+          {/* {connectData === true ? (
+            <>
+              <h6 className="text-center mt-5">MINT Address</h6>
+              <div className="row ">
+                <div className="col-12 mt-3 text-center">
+                  {nftAddress.map((val, ind) => {
+                    return <p key={ind}>{val.pubkey.toString()}</p>;
+                  })}
+                </div>
+              </div>
+            </>
+          ) : (
+            ""
+          )} */}
         </div>
       </section>
     </>

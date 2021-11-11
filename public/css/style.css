@@ -5,7 +5,11 @@
 }
 
 body {
-  background-color:grey;
+  background-color: grey;
+}
+
+p {
+  margin-bottom: 0%;
 }
 
 .wallet .create_mint button {
@@ -32,4 +36,31 @@ body {
 .wallet .show {
   color: black;
   font-weight: 600;
+}
+
+.nft .cart {
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  min-height: 14rem;
+  width: 100%;
+  border-radius: 4px;
+}
+
+.nft .title {
+  font-weight: 600;
+}
+
+.nft .cart .img img {
+  height: 130px;
+  width: 130px;
+  border-radius: 50px;
+}
+
+.nft .cart .img p {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.nft .cart .img span {
+  font-weight: 500;
+  font-size: 0.85rem;
 }
