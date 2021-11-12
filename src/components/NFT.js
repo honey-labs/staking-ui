@@ -70,7 +70,7 @@ const NFT = (props) => {
                               </div>
                               <div className="group mb-5 pb-2 mt-3 text-center">
                                 <button>Stake</button>
-                                <button>noStake</button>
+                                <button>UnStake</button>
                               </div>
                             </div>
                           </div>
