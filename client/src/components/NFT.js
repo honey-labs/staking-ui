@@ -7,7 +7,6 @@ const fun = async (x) => {
     let n = x.length;
 
     for (let i = 0; i < n; i++) {
-      console.log(x[i].data.uri);
       let val = await axios.get(x[i].data.uri);
       arr.push(val);
     }
@@ -21,14 +20,10 @@ const NFT = (props) => {
   const [nft, setNft] = useState([]);
   const [api, setApi] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  console.log(api);
-  console.log(nft);
   useEffect(() => {
     if (props.valid === true) {
       setLoading(false);
-      var result = Object.keys(props.nft).map((key) => props.nft[key]);
-      setNft(result);
+      setNft(props.nft);
     }
   }, [props.nft]);
 
