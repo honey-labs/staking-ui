@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { SingleNFT } from "./SingleNFT";
+
+const UNKNOWN_COLLECTION = 'Unknown';
 
 const fun = async (x) => {
   try {
@@ -10,7 +13,18 @@ const fun = async (x) => {
       let val = await axios.get(x[i].data.uri);
       arr.push(val);
     }
-    return arr;
+
+    const collections = arr.reduce((acc, { data }) => {
+      const { family, name } = data.collection || {};
+      const collectionName = family || name || UNKNOWN_COLLECTION;
+      if (!acc[collectionName]) {
+        acc[collectionName] = [];
+      }
+      acc[collectionName].push(data);
+      return acc;
+    }, {});
+
+    return collections;
   } catch (error) {
     console.log(error);
   }
@@ -18,7 +32,7 @@ const fun = async (x) => {
 
 const NFT = (props) => {
   const [nft, setNft] = useState([]);
-  const [api, setApi] = useState([]);
+  const [api, setApi] = useState({});
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     if (props.valid === true) {
@@ -36,6 +50,8 @@ const NFT = (props) => {
     data();
   }, [nft]);
 
+  const collections = Object.keys(api);
+
   return (
     <>
       {props.valid === true ? (
@@ -50,40 +66,33 @@ const NFT = (props) => {
               <div className="row  d-flex justify-content-center">
                 {loading ? (
                   <>
-                    {api &&
-                      api.length > 0 &&
-                      api.map((val, ind) => {
-                        return (
-                          <div className="col-4 mt-3" key={ind}>
-                            <div className="cart text-center">
-                              <div className="img mt-4 pt-3">
-                                <img src={val.data.image} alt="loading..." />
-                                <p className="mt-1">{val.data.name}</p>
-                                <h6 className=" mt-2">
-                                  {val.data.description}
-                                </h6>
-                              </div>
-                              <div className="group mb-5 pb-2 mt-3 text-center">
-                                <button>Stake</button>
-                                <button>UnStake</button>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
+                    {collections.map((name) => {
+                      return (
+                        <div class="row">
+                          <h5>{name}</h5>
+                          {api[name].map((item, idx) => (
+                            <SingleNFT
+                              key={`${name}-${idx}`}
+                              name={item.name}
+                              image={item.image}
+                            />
+                          ))}
+                        </div>
+                      );
+                    })}
                   </>
                 ) : (
-                  <>
-                    <p className="text-center">loading...</p>
-                  </>
-                )}
+                    <>
+                      <p className="text-center">loading...</p>
+                    </>
+                  )}
               </div>
             </div>
           </section>
         </>
       ) : (
-        ""
-      )}
+          ""
+        )}
     </>
   );
 };
