@@ -1,52 +1,47 @@
 import React, { useEffect, useState } from "react";
 import NFT from "./NFT";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  SolanaConnect,
-  SolanaDisConnect,
-  BalanceSolana,
-  NftSolana,
-} from "../actions/index";
+import { SolanaConnect, SolanaDisConnect, NftSolana } from "../actions/index";
+import { fetchWalletNft } from "../actions/fetchApi";
 
 const Wallet = () => {
   const dispatch = useDispatch();
-  const SolanaProvider = useSelector((state) => state.ProviderReducer.validate);
+  const SolanaProvider = useSelector((state) => state.ProviderReducer);
   const SolanaStart = useSelector((state) => state.SolanaConnectDisconnect);
-  const SolanaBalance = useSelector((state) => state.SolanaBalanceReducer);
   const SolanaNfts = useSelector((state) => state.SolanaNftsReducer);
+  const NftState = useSelector((state) => state.fetchNfts);
   const [nfts, setNfts] = useState([]);
-  const [balance, setBalance] = useState();
 
-  SolanaBalance.then((bal) => {
-    setBalance(bal.balance);
-  });
-
-  SolanaNfts.then((nft) => {
-    setNfts(nft.nft);
+  NftState.then((nft) => {
+    setNfts(nft);
   });
 
   useEffect(() => {
-    if (SolanaProvider) {
-      SolanaProvider.on("connect", () => {
-        let key = SolanaProvider.publicKey;
+    if (SolanaProvider.provider && SolanaProvider.loading === false) {
+      SolanaProvider.provider.on("connect", () => {
+        let key = SolanaProvider.provider.publicKey;
+
         dispatch(SolanaConnect(key));
       });
-      SolanaProvider.on("disconnect", () => {
+      SolanaProvider.provider.on("disconnect", () => {
         dispatch(SolanaDisConnect());
       });
 
-      SolanaProvider.connect({ onlyIfTrusted: true });
+      SolanaProvider.provider.connect({ onlyIfTrusted: true });
 
       return () => {
-        SolanaProvider.disconnect();
+        SolanaProvider.provider.disconnect();
       };
     }
-  }, [SolanaProvider]);
+  }, [SolanaProvider.provider]);
 
   useEffect(() => {
-    dispatch(BalanceSolana(SolanaStart.connect, SolanaProvider.publicKey));
-    dispatch(NftSolana(SolanaStart.connect, SolanaProvider.publicKey));
+    dispatch(NftSolana(SolanaStart.connect, SolanaProvider.provider.publicKey));
   }, [SolanaStart.connect === true]);
+
+  useEffect(() => {
+    dispatch(fetchWalletNft(SolanaProvider.provider.publicKey));
+  }, [SolanaStart.loading === false]);
 
   return (
     <>
@@ -62,11 +57,11 @@ const Wallet = () => {
               <h2>Phantom Wallet</h2>
             </div>
             <div className="col-12 btn_group text mt-5 text-center">
-              <button onClick={() => SolanaProvider.connect()}>
+              <button onClick={() => SolanaProvider.provider.connect()}>
                 Connect to wallet
               </button>
               <button
-                onClick={() => SolanaProvider.disconnect()}
+                onClick={() => SolanaProvider.provider.disconnect()}
                 className="ml-3"
               >
                 Disconnect to wallet
@@ -78,14 +73,14 @@ const Wallet = () => {
               <p className="show">{SolanaStart.message}</p>
 
               <p className="mt-3">
-                {SolanaStart.connect === true
-                  ? `Balance is ${balance} SOL`
+                {SolanaStart.connect
+                  ? `Balance is ${SolanaStart.balance} SOL`
                   : ""}
               </p>
             </div>
           </div>
 
-          <NFT nft={nfts} valid={SolanaStart.connect} />
+          <NFT nft={nfts} connect={SolanaStart.connect} />
         </div>
       </section>
     </>

@@ -1,23 +1,31 @@
 const initialState = {
-  validate: "",
+  provider: "",
+  loading: true,
+  error: null,
 };
 
 const ProviderReducer = (state = initialState, action) => {
   switch (action.type) {
-    case "CHECK_PROVIDER":
-      const getProvider = () => {
-        if ("solana" in window) {
-          const provider = window.solana;
-          if (provider.isPhantom) {
-            return provider;
-          }
-        }
-        window.open("https://phantom.app/", "_blank");
-      };
-      const provider = getProvider();
+    case "CHECK_PROVIDER_REQUEST":
       return {
         ...state,
-        validate: provider,
+        loading: true,
+        error: null,
+      };
+
+    case "CHECK_PROVIDER":
+      return {
+        ...state,
+        provider: action.payload,
+        loading: false,
+        error: null,
+      };
+
+    case "CHECK_PROVIDER_FAILURE":
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
       };
 
     default:

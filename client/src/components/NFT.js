@@ -1,44 +1,18 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-
-const fun = async (x) => {
-  try {
-    let arr = [];
-    let n = x.length;
-
-    for (let i = 0; i < n; i++) {
-      let val = await axios.get(x[i].data.uri);
-      arr.push(val);
-    }
-    return arr;
-  } catch (error) {
-    console.log(error);
-  }
-};
+import React, { useState, useEffect } from "react";
 
 const NFT = (props) => {
-  const [nft, setNft] = useState([]);
-  const [api, setApi] = useState([]);
-  const [loading, setLoading] = useState(false);
-  useEffect(() => {
-    if (props.valid === true) {
-      setLoading(false);
-      setNft(props.nft);
-    }
-  }, [props.nft]);
+  const [Nfts, setNfts] = useState();
 
   useEffect(() => {
-    async function data() {
-      let res = await fun(nft);
-      setApi(res);
-      setLoading(true);
-    }
-    data();
-  }, [nft]);
+    setNfts(props.nft);
+    return () => {
+      setNfts("");
+    };
+  }, [props.nft]);
 
   return (
     <>
-      {props.valid === true ? (
+      {props.connect ? (
         <>
           <section className="nft mt-2 my-5">
             <div className="container">
@@ -48,33 +22,30 @@ const NFT = (props) => {
                 </div>
               </div>
               <div className="row  d-flex justify-content-center">
-                {loading ? (
+                {Nfts.loading ? (
                   <>
-                    {api &&
-                      api.length > 0 &&
-                      api.map((val, ind) => {
+                    <p className="text-center">loading...</p>
+                  </>
+                ) : (
+                  <>
+                    {Nfts.nft &&
+                      Nfts.nft.length > 0 &&
+                      Nfts.nft.map((val, ind) => {
                         return (
                           <div className="col-4 mt-3" key={ind}>
                             <div className="cart text-center">
                               <div className="img mt-4 pt-3">
-                                <img src={val.data.image} alt="loading..." />
-                                <p className="mt-1">{val.data.name}</p>
-                                <h6 className=" mt-2">
-                                  {val.data.description}
-                                </h6>
+                                <img src={val.image} alt="loading..." />
+                                <p className="mt-1">{val.name}</p>
+                                <h6 className=" mt-2">{val.description}</h6>
                               </div>
                               <div className="group mb-5 pb-2 mt-3 text-center">
                                 <button>Stake</button>
-                                <button>UnStake</button>
                               </div>
                             </div>
                           </div>
                         );
                       })}
-                  </>
-                ) : (
-                  <>
-                    <p className="text-center">loading...</p>
                   </>
                 )}
               </div>
