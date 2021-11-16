@@ -57,15 +57,18 @@ const Wallet = () => {
               <h2>Phantom Wallet</h2>
             </div>
             <div className="col-12 btn_group text mt-5 text-center">
-              <button onClick={() => SolanaProvider.provider.connect()}>
-                Connect to wallet
-              </button>
-              <button
-                onClick={() => SolanaProvider.provider.disconnect()}
-                className="ml-3"
-              >
-                Disconnect to wallet
-              </button>
+              <div className="row">
+                <div className="col-6 lg-text-right">
+                  <button onClick={() => SolanaProvider.provider.connect()} className="btn btn-primary">
+                    Connect to wallet
+                  </button>
+                </div>
+                <div className="col-6 lg-text-left">
+                  <button onClick={() => SolanaProvider.provider.disconnect()} className="btn btn-secondary">
+                    Disconnect to wallet
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
           <div className="row mt-5">

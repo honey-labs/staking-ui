@@ -27,9 +27,9 @@ p {
 
 .wallet .btn_group button {
   padding: 0.5rem 2rem;
-  background-color: rgb(194, 194, 196);
-  color: rgb(0, 0, 0);
-  border: 1px solid black;
+  /* background-color: rgb(194, 194, 196); */
+  /* color: rgb(0, 0, 0); */
+  /* border: 1px solid black; */
   border-radius: 20px;
 }
 
@@ -73,4 +73,13 @@ p {
   color: white;
   border: 2px solid black;
   padding: 0.3rem 2rem;
+}
+
+@media (min-width: 1199.98px) {
+  .lg-text-right {
+    text-align: right !important;
+  }  
+  .lg-text-left {
+    text-align: left;
+  } 
 }

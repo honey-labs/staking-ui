@@ -19,7 +19,6 @@ const SolanaConnectDisconnect = (state = initialState, action) => {
 
     case "CONNECT_SOLANA":
       const { balance, key } = action.payload;
-
       return {
         ...state,
         publicKey: key,

@@ -85,7 +85,7 @@ export const NftSolana = (connect, key) => {
 
     try {
       if (connect) {
-        const connect = createConnectionConfig(clusterApiUrl("devnet"));
+        const connect = createConnectionConfig(clusterApiUrl(process.env.REACT_APP_NETWORK));
         let ownerToken = key;
         const result = isValidSolanaAddress(ownerToken);
 

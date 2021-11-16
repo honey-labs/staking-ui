@@ -1,4 +1,4 @@
-const homepage = "http://localhost:8000";
+const homepage = process.env.REACT_APP_API_URI;
 
 const Api = {
   userWallet: `${homepage}/api/wallet/userWallet`,

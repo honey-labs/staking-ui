@@ -22,8 +22,14 @@ import {
 import { clusterApiUrl } from "@solana/web3.js";
 require("@solana/wallet-adapter-react-ui/styles.css");
 
+const capitalizeFirstLetter = (string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 const AppWithProvider = () => {
-  const network = WalletAdapterNetwork.Devnet;
+  const networkName = capitalizeFirstLetter(process.env.REACT_APP_NETWORK);
+
+  const network = WalletAdapterNetwork.networkName;
 
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
 
