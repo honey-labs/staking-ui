@@ -67,14 +67,5 @@ wallet.methods.setWalletNfts = async function (nft) {
   }
 };
 
-wallet.methods.newWalletNfts = async function (Data) {
-  try {
-    this.nfts = this.nfts.concat([Data]);
-    await this.save();
-  } catch (error) {
-    return error;
-  }
-};
-
 const wallets = new mongoose.model("Wallet", wallet);
 module.exports = wallets;

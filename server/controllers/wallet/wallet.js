@@ -36,27 +36,30 @@ module.exports.nfts = async (req, res) => {
     if (checkWallet) {
       const getNfts = checkWallet.nfts;
 
-      // if (nft.length > getNfts.length) {
-      if (getNfts.length > 0 && nft.length > 0) {
+      if (getNfts.length > 0) {
         const len = nft.length;
+        let arr = [];
 
-        for (var i = 0; i < len; i++) {
-          const Data = nft[i];
+        for (let i = 0; i < len; i++) {
+          let flag = 0;
+          for (let j = 0; j < getNfts.length; j++) {
+            if (getNfts[j].address == nft[i].address) {
+              arr.push(getNfts[j]);
+              flag = 1;
+            }
+          }
 
-          const str = "nfts.address";
-
-          const findNfts = await wallet.findOne({
-            [str]: Data.address,
-          });
-
-          if (findNfts) {
-          } else {
-            const findWallet = await wallet.findOne({
-              publicKey: walletAddress,
-            });
-            await findWallet.newWalletNfts(Data);
+          if (flag === 0) {
+            arr.push(nft[i]);
           }
         }
+
+        await wallet.findByIdAndUpdate(
+          { _id: checkWallet._id },
+          {
+            nfts: arr,
+          }
+        );
 
         return res.status(201).json({ message: "nft has been saved" });
       } else {
@@ -68,9 +71,6 @@ module.exports.nfts = async (req, res) => {
           }
         }
       }
-      // } else if (nft.length < getNfts.length) {
-
-      // }
     } else {
       return res.status(206).json({ message: "wallet not found" });
     }

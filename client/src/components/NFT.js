@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 const NFT = (props) => {
   const [Nfts, setNfts] = useState();
 
+  console.log(Nfts);
+
   useEffect(() => {
     setNfts(props.nft);
     return () => {
