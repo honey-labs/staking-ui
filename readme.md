@@ -1,17 +1,22 @@
-# Duplicate .env.example to .env in client dir
+# set Network in env among 'devnet' | 'testnet' | 'mainnet-beta'
 
-  ```
-    REACT_APP_API_URI={API_URI}
-    REACT_APP_NETWORK={NETWORK}
-  ```
+```
+REACT_APP_NETWORK={network}
+```
 
-# Duplicate config.env.example to config.env in server dir
+```
+yarn install
+```
+or
+```
+npm install
+```
 
-  ```
-    PORT={DB_PORT}
-    DB={DATABASE}
-  ```
-
-# prerequisite
-
-    Should install mongodb
+# then
+```
+yarn start
+```
+or
+```
+npm start
+```
