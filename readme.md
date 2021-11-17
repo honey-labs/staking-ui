@@ -1,4 +1,4 @@
-# set Network in env among 'devnet' | 'testnet' | 'mainnet-beta'
+### set Network in env among 'devnet' | 'testnet' | 'mainnet-beta'
 
 ```
 REACT_APP_NETWORK={network}
@@ -12,7 +12,7 @@ or
 npm install
 ```
 
-# then
+### then
 ```
 yarn start
 ```
