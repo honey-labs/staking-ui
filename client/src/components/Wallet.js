@@ -1,87 +1,54 @@
-import React, { useEffect, useState } from "react";
-import NFT from "./NFT";
-import { useSelector, useDispatch } from "react-redux";
-import { SolanaConnect, SolanaDisConnect, NftSolana } from "../actions/index";
-import { fetchWalletNft } from "../actions/fetchApi";
+import React, { useContext } from "react";
+import { checkWalletDetails } from "../App";
+import WalletNft from "./WalletNft";
 
 const Wallet = () => {
-  const dispatch = useDispatch();
-  const SolanaProvider = useSelector((state) => state.ProviderReducer);
-  const SolanaStart = useSelector((state) => state.SolanaConnectDisconnect);
-  const SolanaNfts = useSelector((state) => state.SolanaNftsReducer);
-  const NftState = useSelector((state) => state.fetchNfts);
-  const [nfts, setNfts] = useState([]);
+  // use the useContext for get the all state value from App.js Component
+  const { publicKey, loading, setWalletAddress, isSolana } =
+    useContext(checkWalletDetails);
 
-  NftState.then((nft) => {
-    setNfts(nft);
-  });
+  // function for connect Phantom wallet
+  const connectWallet = async () => {
+    try {
+      if (loading) {
+        const connect = await isSolana.connect();
 
-  useEffect(() => {
-    if (SolanaProvider.provider && SolanaProvider.loading === false) {
-      SolanaProvider.provider.on("connect", () => {
-        let key = SolanaProvider.provider.publicKey;
-
-        dispatch(SolanaConnect(key));
+        // set values in state
+        return setWalletAddress({
+          publicKey: connect.publicKey.toString(),
+          loading: false,
+          message: "Phantom wallet is found",
+        });
+      }
+    } catch (error) {
+      // set values in state
+      return setWalletAddress({
+        loading: true,
+        message: "Phantom wallet is not found",
+        error: error.message,
       });
-      SolanaProvider.provider.on("disconnect", () => {
-        dispatch(SolanaDisConnect());
-      });
-
-      SolanaProvider.provider.connect({ onlyIfTrusted: true });
-
-      return () => {
-        SolanaProvider.provider.disconnect();
-      };
     }
-  }, [SolanaProvider.provider]);
-
-  useEffect(() => {
-    dispatch(NftSolana(SolanaStart.connect, SolanaProvider.provider.publicKey));
-  }, [SolanaStart.connect === true]);
-
-  useEffect(() => {
-    dispatch(fetchWalletNft(SolanaProvider.provider.publicKey));
-  }, [SolanaStart.loading === false]);
+  };
 
   return (
     <>
-      <section className="wallet">
+      <section className="wallet mb-5">
         <div className="container-fluid">
-          <div className="row mt-4 mr-4">
-            <div className="col-12 create_mint d-flex justify-content-end">
-              {/* <button onClick={getInfo}>create MINT</button> */}
+          <div className="row mt-4 pl-5 pr-5">
+            <div className="col-6 create_mint_left d-flex align-items-center justify-content-start">
+              <div className="title">
+                <h4>Staking-ui</h4>
+              </div>
+            </div>
+            <div className="col-6 create_mint_right d-flex justify-content-end">
+              {!publicKey && (
+                <button onClick={connectWallet}>Connect wallet</button>
+              )}
+              {publicKey && <button>{publicKey}</button>}
             </div>
           </div>
-          <div className="row">
-            <div className="col-12 title text-center mt-5">
-              <h2>Phantom Wallet</h2>
-            </div>
-            <div className="col-12 btn_group text mt-5 text-center">
-              <button onClick={() => SolanaProvider.provider.connect()}>
-                Connect to wallet
-              </button>
-              <button
-                onClick={() => SolanaProvider.provider.disconnect()}
-                className="ml-3"
-              >
-                Disconnect to wallet
-              </button>
-            </div>
-          </div>
-          <div className="row mt-5">
-            <div className="col-12 text-center">
-              <p className="show">{SolanaStart.message}</p>
-
-              <p className="mt-3">
-                {SolanaStart.connect
-                  ? `Balance is ${SolanaStart.balance} SOL`
-                  : ""}
-              </p>
-            </div>
-          </div>
-
-          <NFT nft={nfts} connect={SolanaStart.connect} />
         </div>
+        <WalletNft />
       </section>
     </>
   );

@@ -2,43 +2,43 @@
   box-sizing: border-box;
   padding: 0;
   margin: 0;
-}
-
-body {
-  background-color: grey;
+  background-color: #232f3e;
 }
 
 p {
   margin-bottom: 0rem !important;
 }
 
-.wallet .create_mint button {
+.wallet .create_mint_right button {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 12rem;
   padding: 0.5rem 2rem;
-  background-color: black;
+  background-color: white;
+  text-align: center;
+  color: black;
+  border: 1px solid black;
+  border-radius: 20px;
+  font-weight: 600;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px,
+    rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
+    rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+
+.wallet .create_mint_left .title h4 {
   color: white;
-  border: 1px solid black;
-  border-radius: 20px;
-}
-
-.wallet .title h2 {
-  color: black;
   font-weight: 600;
 }
 
-.wallet .btn_group button {
-  padding: 0.5rem 2rem;
-  background-color: rgb(194, 194, 196);
-  color: rgb(0, 0, 0);
-  border: 1px solid black;
-  border-radius: 20px;
+.walletNft .nft_title h3 {
+  color: white;
+  font-weight: 700;
 }
 
-.wallet .show {
-  color: black;
-  font-weight: 600;
-}
-
-.nft .cart {
+.walletNft .nft_cart {
   box-shadow: rgba(85, 106, 114, 0.12) 0px 2px 4px 0px,
     rgba(89, 110, 117, 0.32) 0px 2px 16px 0px;
   min-height: 14rem;
@@ -46,31 +46,24 @@ p {
   border-radius: 10px;
 }
 
-.nft .title {
-  font-weight: 600;
-}
-
-.nft .cart .img img {
+.walletNft .nft_cart .nft_img img {
   height: 130px;
   width: 130px;
   border-radius: 50px;
 }
 
-.nft .cart .img p {
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-.nft .cart .img h6 {
-  font-weight: 500;
-  font-size: 0.85rem;
-}
-
-.nft .cart .group button {
-  margin: 0.3rem;
-  border-radius: 20px;
-  background-color: black;
+.walletNft .nft_cart .nft_details p {
   color: white;
-  border: 2px solid black;
-  padding: 0.3rem 2rem;
+  font-weight: 600;
+}
+
+.walletNft .nft_cart button {
+  background-color: white;
+  padding: 0.5rem 2rem;
+  color: black;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
 }
